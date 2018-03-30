@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+         <ui:composition template="../template/templatePage.xhtml">
+            <ui:define name="content">
+                <table>
+                    <tr>
+                        <td valign="top">
+                            <p:panelGrid class="PanelGrid" columns="2">
+                                <f:facet name="header"><h3>KULLANICI BİLGİLERİ</h3></f:facet>
+
+                                <p:outputLabel value="isim:"/>
+                                <p:outputLabel value="#{SignIn.bloodDonor.donorsName}"/>
+
+                                <p:outputLabel value="soyisim:"/>
+                                <p:outputLabel value="#{SignIn.bloodDonor.donorsSurname}"/>
+
+                                <p:outputLabel value="kan grubu:"/>
+                                <p:outputLabel value="#{SignIn.bloodDonor.bloodGroupid.bloodGroupName}"/>
+
+                                <p:outputLabel value="şehir:"/>
+                                <p:outputLabel value="#{SignIn.bloodDonor.cityId.cityName}"/>
+
+                                 <p:outputLabel value="telefon:"/>
+                                 <p:outputLabel value="#{SignIn.bloodDonor.donorsPhone}"/>
+
+                                 <p:outputLabel value="mail:"/>
+                                 <p:outputLabel value="#{SignIn.bloodDonor.donorsMail}"/>
+                                 <f:facet name="footer">
+                                     <h:form><p:commandButton value="Güncelle" onclick="DonorUpdate()"/></h:form>
+                                    
+                                 </f:facet>
+                            </p:panelGrid>
+                        </td>
+                        <td>
+                             <p:dialog widgetVar="dlg" showEffect="fade">
+                                <h:form prependId="false">
+
+                                    <h:panelGrid columns="1">
+                                        <h:outputLabel for="title" value="Konumunuzu buraya eklemek ister misiniz ?" />
+                                        <f:facet name="footer"> 
+                                            <p:commandButton id="add" value="Add" oncomplete="markerAddComplete()" >
+                                            </p:commandButton>
+                                            <p:commandButton value="Cancel" onclick="return cancel()" />
+                                        </f:facet>                 
+                                    </h:panelGrid>     
+                                </h:form>
+                            </p:dialog>
+                            <!--Bağışçı için güncelleme formu-->
+                           <div id="donorUpdateForm" style="visibility: hidden;">
+                           <h:form  prependId="false" id="donorsRegistrationForm">
+                             <p:growl id="growl"/>
+                            <p:panelGrid class="PanelGrid" columns="3">
+                             <f:facet name="header"><h3>BAĞIŞÇI GÜNCELLEME FORMU</h3></f:facet>
+
+                             <p:outputLabel for="name" value="İSİM:"/>
+                             <p:inputText id="name" value="#{SignIn.bloodDonor.donorsName}" requiredMessage="İsim alanının doldurulması zorunludur." required="true" maxlength="15">
+                                 <p:keyFilter regEx="/[a-z' ']/i"/>
+                             </p:inputText>                   
+                             <p:message for="name" />
+
+                             <p:outputLabel for="surname" value="SOYİSİM:"/>
+                             <p:inputText id="surname" value="#{SignIn.bloodDonor.donorsSurname}" requiredMessage="Soyisim alanının doldurulması zorunludur." required="true" maxlength="15">
+                                <p:keyFilter regEx="/[a-z' ']/i"/>
+                             </p:inputText>
+                             <p:message for="surname" />
+
+                              <p:outputLabel for="bloodgroup" value="KAN GRUBU:" />
+                              <p:selectOneMenu id="bloodgroup" value="#{SignIn.donors_newbloodGroup}" requiredMessage="Kan grubu alanının doldurulması zorunludur." required="true"  style="width:200px">
+                                  <f:selectItem itemLabel="#{SignIn.bloodDonor.bloodGroupid.bloodGroupName}" itemValue="#{SignIn.bloodDonor.bloodGroupid.bloodGroupid}" />
+                                 <f:selectItems value="#{donorsRegistration.bloodGroupSelectItem}" />
+                             </p:selectOneMenu>
+                             <p:message for="bloodgroup"/>
+
+                             <p:outputLabel for="city" value="ŞEHİR:" />
+                             <p:selectOneMenu id="city" value="#{SignIn.donors_newcity}" requiredMessage="Şehir alanının doldurulması zorunludur." required="true" style="width:200px">
+                                  <f:selectItem itemLabel="#{SignIn.bloodDonor.cityId.cityName}" itemValue="#{SignIn.bloodDonor.cityId.cityId}" />
+                                 <f:selectItems value="#{donorsRegistration.citiesSelectItem}" />
+                             </p:selectOneMenu>
+                             <p:message for="city"/>
+
+                              <p:outputLabel for="phone" value="TELEFON:"/>
+                              <p:inputMask id="phone" value="#{SignIn.bloodDonor.donorsPhone}" mask="(999) 999-9999" requiredMessage="Telefon alanının doldurulması zorunludur." required="true"/>
+                             <p:message for="phone"/>
+                             
+                              <p:outputLabel for="password" value="ŞİFRE"/>
+                              <p:password id="password" value="#{SignIn.donors_newpass}" feedback="true"
+                               promptLabel="Lütfen şifre giriniz" weakLabel="Zayıf"
+                               goodLabel="Orta seviye" strongLabel="Güçlü" />
+                                <p:message for="password"/>
+
+                             <h:inputHidden id="lng" value="#{SignIn.bloodDonor.donorsLat}"  />
+                             <h:inputHidden id="lat" value="#{SignIn.bloodDonor.donorsLng}" />
+                              <h:outputText value=" "/>
+
+                              <p:commandButton actionListener="#{SignIn.updateAccount()}" value="HESABI GÜNCELLE" update="growl"/>
+                              <h:outputText value=" "/>
+                              <h:outputText value=" "/>
+
+                              <f:facet name="footer">
+                                  <p:outputLabel value="!!Harita üzerinde daha önce yer işareti yapmadıysanız yapabilir veya güncelleyebilirsiniz."/><br/>
+                                    <p:outputLabel value="!!Şifre alanını güncellemek istemiyosanız boş bırakınız."/>
+                              </f:facet>
+                             </p:panelGrid>
+                         </h:form>
+                         </div>
+                        <!--Bağışçı için güncelleme formu--> 
+                        </td>
+                    </tr>
+                </table> 
+                
+               
+              <h:outputScript library="scripts" name="gmap.js"/>
+              <script type="text/javascript">
+                  function DonorUpdate()
+                  {
+                      var donorUpdateForm=document.getElementById("donorUpdateForm");                     
+                      if(donorUpdateForm.style.visibility=="hidden")
+                          donorUpdateForm.style.visibility="visible";
+                      else
+                          donorUpdateForm.style.visibility="hidden";
+                  }
+              </script>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body style="margin:0">
+        <ui:composition>       
+	<div  class="topnav" id="myTopnav">
+             <h:link class="active" outcome="/secured/main.xhtml" value="Ana Sayfa" />
+             <h:link outcome="/index.xhtml" value="Kan İhtiyaç Formu" />
+            <h:link rendered="#{SignIn.loggedIn==false}" outcome="/secured/signUp" value="Kayıt Ol" />
+            <h:link rendered="#{SignIn.loggedIn==true}" outcome="/secured/donorProfile" value="Profilim" />
+            <h:link rendered="#{SignIn.loggedIn==true}" outcome="/secured/logout" value="Çıkış Yap" />
+            <!--HESABI PASİFE GEÇİR-->
+            <h:form rendered="#{SignIn.loggedIn==true}">
+                <p:commandLink value="Hesabı Sil" >
+                     <p:confirm header="Onayla" message="Hesabı silmek istediğinizden emin misiniz ?" icon="ui-icon-alert" />
+                </p:commandLink>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Evet" action="#{SignIn.deleteAccount()}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Hayır" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <!--HESABI PASİFE GEÇİR BİTİŞ-->
+            <!--ŞİFRE SIFIRLAMA-->
+            <h:form>
+                <p:commandLink rendered="#{SignIn.loggedIn==false}" onclick="PF('resetPasswordDialog').show();"  value="Şifremi Unuttum" />
+                <p:growl id="growl" showDetail="true" /> 
+                <p:dialog showEffect="true" hideEffect="fade" modal="true" closeOnEscape="true" resizable="false" widgetVar="resetPasswordDialog" header="Şifreyi sıfırlama">
+                    <p:panelGrid columns="2">
+                        <p:inputText placeholder="mail adresiniz:" id="mail" value="#{donorsRegistration.donorsMailResetPassword}" requiredMessage="Mail alanının doldurulması zorunludur." required="true" validatorMessage="Lütfen geçerli bir eposta giriniz.">
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                        </p:inputText>
+                        <p:commandButton value="Şifremi Sıfırla" oncomplete="ResetPasswordSuccessful(xhr, status, args)" actionListener="#{donorsRegistration.resetPassword()}"  update="growl"/>
+                    </p:panelGrid>                 
+                </p:dialog>
+            </h:form>
+             <!--ŞİFRE SIFIRLAMA-->
+           <!--KULLANICI GİRİŞİ -->
+            <h:form>
+                 <p:commandLink rendered="#{SignIn.loggedIn==false}" onclick="PF('signIn').show();"  value="Giriş Yap" />
+                 <p:growl id="growl" showDetail="true" /> 
+                <p:dialog showEffect="true" hideEffect="fade" modal="true" closeOnEscape="true" resizable="false" widgetVar="signIn" header="BAĞIŞÇI GİRİŞ SAYFASI">
+                    <p:panelGrid class="PanelGrid" columns="2">
+                       
+                       <p:outputLabel for="mail" value="MAİL:"/>
+                       <p:inputText id="mail" value="#{SignIn.loginMail}" requiredMessage="Mail alanının doldurulması zorunludur." required="true" validatorMessage="Lütfen geçerli bir eposta giriniz.">
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                       </p:inputText>
+                    
+                           
+                        <p:outputLabel for="password" value="ŞİFRE"/>
+                        <p:password id="password" value="#{SignIn.loginPass}" requiredMessage="Şifre alanının doldurulması zorunludur." required="true"/>
+                       
+                       
+                      
+                      
+                       <h:outputText value=""/>
+                       <p:commandButton value="Giriş Yap" actionListener="#{SignIn.loginControl}" update="growl"/>
+                       
+                   </p:panelGrid>
+                </p:dialog>
+             </h:form>
+            <h:outputText id="donorsNameSurname" value="#{SignIn.bloodDonor.donorsName} #{SignIn.bloodDonor.donorsSurname}"/>
+           <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+           
+        </div>
+             <!--KULLANICI GİRİŞİ BİTİŞ-->
+                <!--GOOGLE MAPS -->
+            <h:form>           
+           <p:gmap id="gmap" center="38.9025,35.5742" zoom="6" type="HYBRID" style="width:100%;height:400px"
+                   model="#{mapBean.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map">
+               <p:ajax event="overlaySelect" listener="#{mapBean.onMarkerSelect}" /> 
+                <p:gmapInfoWindow id="infoWindow">
+                    <table style="font-size: 15px">
+                        <tr>
+                            <td>isim-soyisim:</td>
+                            <td>#{mapBean.tempDonor.donorsName.toUpperCase()} #{mapBean.tempDonor.donorsSurname.toUpperCase()}</td>
+                        </tr>
+                        <tr>
+                            <td>Kan grubu:</td>
+                            <td>#{mapBean.tempDonor.bloodGroupid.bloodGroupName}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="#{mapBean.tempDonor.donorsId}mapContact">
+                                <p:commandLink rendered="#{patientSignIn.isLogged==true}" oncomplete="HandleContactRequest(xhr, status, args)" actionListener="#{mapBean.donorDetail(mapBean.tempDonor.donorsId)}" value="İletişim için tıklayınız."/>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="#{mapBean.tempDonor.donorsId}mapMail"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="#{mapBean.tempDonor.donorsId}mapPhone"></td>
+                        </tr>
+                    </table>
+                </p:gmapInfoWindow>
+           </p:gmap>         
+            </h:form>   
+            <!--GOOGLE MAPS BİTİŞ-->
+            <!--HASTA KEY GİRİŞİ-->
+            <div style="margin-top: 10px;text-align: center;">
+                <h:form rendered="#{patientSignIn.isLogged==false}">
+                    <p:inputText placeholder="size verilen KEY" value="#{patientSignIn.patientKey}"/>
+                    <p:commandButton value="GİRİŞ" action="#{patientSignIn.DAO()}"/>
+                    <p:outputLabel value="#{patientSignIn.result}"/>
+                </h:form>
+                <h:form style="color:white;" rendered="#{patientSignIn.isLogged==true}">
+                      <p:outputLabel value="Sayın #{patientSignIn.patient.patientName.toUpperCase()} #{patientSignIn.patient.patientSurname.toUpperCase()}, kan bağış sistemine hoş geldiniz."/><br/>
+                      <p:outputLabel value="Sistemdeki bağışçılarımıza iletişim adresleriyle ulaşabilirsiniz."/><br/>
+                      <p:outputLabel value="Bağışçıların iletişim adreslerini öğrenebilmek için 'iletişim için tıklayınız' alanını kullanınız."/><br/>
+                      <p:commandButton action="#{patientSignIn.logOut()}" value="Çıkış Yap"/><p:commandButton action="#{patientSignIn.endCall()}" value="Çağrıyı Sonlandır"/>
+                </h:form>
+            </div>
+            <!--HASTA KEY GİRİŞİ BİTİŞ -->
+            <p:separator/>
+             <h:outputScript library="scripts" name="navbar.js"/>
+             <script type="text/javascript">
+            function HandleContactRequest(xhr, status, args) 
+            {
+                var donorMailId=args.donorId+'mapMail';
+                var donorPhoneId=args.donorId+'mapPhone';
+                var donorContactId=args.donorId+'mapContact';
+                document.getElementById(donorMailId).innerHTML=args.donorMail;
+                document.getElementById(donorPhoneId).innerHTML=args.donorPhone;
+                document.getElementById(donorContactId).innerHTML="";
+            }
+             function ResetPasswordSuccessful(xhr, status, args)
+             {
+                if(args.resetPassword==true)
+                 PF('resetPasswordDialog').hide();
+             }
+            </script>
+        </ui:composition>
+    </h:body>
+</html>
+

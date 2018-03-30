@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Kan Bağiş Sistemi</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/index.css"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/signUp.css"/>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <div class="row">
+                <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div  id="image">
+                        <h:graphicImage value="resources/images/background.png" />
+                    </div>
+                    <div id="comment">
+                        <span class="black">BİR</span><span class="red"> DAMLA</span><br/>
+                        <span class="black">BİN</span><span class="red"> UMUT</span>
+                        <p:separator style="width:50%"/>
+                    </div>
+                    <div id="navButtons">
+                        <h:form>
+                        <p:commandButton id="mainPageButton" action="/secured/main.xhtml?faces-redirect=true" class="btn btn-success" value="Bende bir umut olmak istiyorum"/>
+                        </h:form>
+                        <h:form id="patientForm">
+                            <p:growl id="growl" />  
+                            <br/><p:commandButton class="btn btn-danger" value="bir umuda ihtiyacım var" onclick="PF('patientRegistrationForm').show();"/>
+                            <p:dialog showEffect="true" hideEffect="fade" modal="true" closeOnEscape="true" resizable="false" widgetVar="patientRegistrationForm" header="Kan İhtiyacı Formu">
+                                <p:panelGrid class="PanelGrid">
+                                    <p:row>
+                                        <p:column><p:outputLabel for="name" value="İSİM:"/></p:column>
+                                        <p:column>
+                                              <p:inputText id="name" value="#{patientRegistrationForm.patientName}" requiredMessage="İsim alanının doldurulması zorunludur." required="true" maxlength="15">
+                                                <p:keyFilter regEx="/[a-z' ']/i"/>
+                                           </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column> <p:outputLabel for="surname" value="SOYİSİM:"/> </p:column>
+                                        <p:column>
+                                             <p:inputText id="surname" value="#{patientRegistrationForm.patientSurname}" requiredMessage="Soyisim alanının doldurulması zorunludur." required="true" maxlength="15">                                                
+                                                <p:keyFilter regEx="/[a-z' ']/i"/>                                             
+                                            </p:inputText>   
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column> <p:outputLabel for="bloodgroup" value="KAN GRUBU:" /> </p:column>
+                                        <p:column>
+                                             <p:selectOneMenu id="bloodgroup" value="#{patientRegistrationForm.patientBloodGroup}" required="true" requiredMessage="Kan grubu alanının doldurulması zorunludur." style="width:200px">                                                
+                                                <f:selectItem itemLabel="seçiniz..." itemValue="" />                                                
+                                                <f:selectItems value="#{patientRegistrationForm.bloodGroupSelectItem}" />                                            
+                                            </p:selectOneMenu>    
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column> <p:outputLabel for="city" value="ŞEHİR:" />   </p:column>
+                                        <p:column>
+                                            <p:selectOneMenu id="city" value="#{patientRegistrationForm.patientCity}" required="true" requiredMessage="Şehir alanının doldurulması zorunludur."  style="width:200px">                                                    
+                                                <f:selectItem itemLabel="seçiniz..." itemValue="" />                                                    
+                                                <f:selectItems value="#{patientRegistrationForm.citiesSelectItem}" />                                               
+                                            </p:selectOneMenu>  
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column> <p:outputLabel for="phone" value="TELEFON:"/>   </p:column>
+                                        <p:column> <p:inputMask id="phone" value="#{patientRegistrationForm.patientphone}" mask="(999) 999-9999" requiredMessage="Telefon alanının doldurulması zorunludur." required="true"/></p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column> <p:outputLabel for="mail" value="MAİL:"/></p:column>
+                                        <p:column>
+                                            <p:inputText id="mail" value="#{patientRegistrationForm.patientMail}" requiredMessage="Bu alanın doldurulması zorunludur." required="true" validatorMessage="Lütfen geçerli bir eposta giriniz.">
+                                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                                            </p:inputText>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column>
+                                            <p:outputLabel value="Hasta Acileyet Derecesi:"/>
+                                        </p:column>
+                                        <p:column>
+                                            <p:selectOneRadio id="patientDegreeOfUrgency" requiredMessage="Lütfen aciliyet derecesini seçiniz." required="true" value="#{patientRegistrationForm.patientDegreeOfUrgency}">
+                                                <f:selectItem itemLabel="Çok Acil" itemValue="1" />
+                                                <f:selectItem itemLabel="24 saat içinde" itemValue="2" />
+                                                <f:selectItem itemLabel="24 saatten fazla" itemValue="3" />
+                                            </p:selectOneRadio>
+                                        </p:column>
+                                    </p:row>      
+                                     <p:row>
+                                         <p:column colspan="2"> <p:outputLabel value="SİZE YARDIM EDEBİLECEK KİŞİLER İÇİN KISA BİR AÇIKLAMA:"/> </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="2">  <p:inputTextarea maxlength="250" value="#{patientRegistrationForm.patientInfo}" rows="6" cols="50"/> </p:column>
+                                    </p:row>
+                                    <p:row>
+                                         <p:column colspan="2"> <p:commandButton update="growl" actionListener="#{patientRegistrationForm.DAO}" oncomplete="handleLoginRequest(xhr, status, args)"  value="KAYDOL" /> </p:column>
+                                    </p:row>                      
+                                </p:panelGrid>
+                            </p:dialog>
+                      
+                        </h:form>
+                    </div>
+                    <div style="visibility: hidden;margin-top:30px;margin-bottom:20px;" id="patientKeyShow">
+                        <h:panelGrid style="margin: auto;text-align:center;" columns="1">
+                            <p:outputLabel value="Sisteme Başarıyla Kayıt Yaptırdınız."/>
+                            <p:outputLabel value="Size verilen id numarası ile sisteme giriş yapabilir ve bağışta bulunmak isteyen insanlar ile iletişime geçebilirsiniz."/>
+                            <p:outputLabel id="patientKey" value=""/>
+                            <p:outputLabel value="Lütfen bu numarayı kaybetmeyiniz!"/>
+                            <p:outputLabel value="Acil şifalar dileriz."/>
+                           <h:form> <p:commandButton value="Siteye Giriş" action="secured/main.xhtml?faces-redirect=true"/></h:form>
+                        </h:panelGrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        function handleLoginRequest(xhr, status, args) {
+            if(args.validationFailed || args.patientKey=="") {
+                PF('patientRegistrationForm').jq.effect("shake", {times:5}, 100);
+            }
+            else {
+                PF('patientRegistrationForm').hide();
+                document.getElementById("patientKeyShow").style.visibility="visible";
+                document.getElementById("patientKey").innerHTML="ID NUMARANIZ:<b>"+args.patientKey+"</b>";
+            }
+         }
+        </script>
+    </h:body>
+</html>
+

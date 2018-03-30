@@ -1,0 +1,33 @@
+#image img
+{
+    width:35%;
+    height:35%;
+    position: relative;
+    margin: auto; 
+}
+#image,#comment,#navButtons
+{
+   text-align: center;
+}
+#comment
+{
+    letter-spacing: 3px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 60px;
+    font-weight: bold;
+}
+#comment .black
+{
+    
+}
+#comment .red
+{
+    color:red;
+    text-shadow: 2px 2px 5px red;
+}
+#patientKeyShow
+{
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 10px #888888;
+}

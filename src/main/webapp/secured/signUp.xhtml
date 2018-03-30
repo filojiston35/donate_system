@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body >   
+       <ui:composition template="../template/templatePage.xhtml">
+           <ui:define name="content">
+            <!--Koordinatlar için dialog-->   
+           <p:dialog widgetVar="dlg" showEffect="fade">
+            <h:form prependId="false">
+                
+                <h:panelGrid columns="1">
+                    <h:outputLabel for="title" value="Konumunuzu buraya eklemek ister misiniz ?" />
+                    <f:facet name="footer"> 
+                        <p:commandButton id="add" value="Add" oncomplete="markerAddComplete()" >
+                        </p:commandButton>
+                        <p:commandButton value="Cancel" onclick="return cancel()" />
+                    </f:facet>                 
+                </h:panelGrid>     
+            </h:form>
+        </p:dialog>
+             <!--Koordinatlar için dialog-->
+           
+              <!--Bağışçı için kayıt formu-->
+              <div >             
+               <h:form  prependId="false" id="donorsRegistrationForm">
+                    <p:growl id="growl"/>
+                   <p:panelGrid class="PanelGrid" columns="3">
+                    <f:facet name="header"><h3>BAĞIŞÇI KAYIT FORMU</h3></f:facet>
+                    
+                    <p:outputLabel for="name" value="İSİM:"/>
+                    <p:inputText id="name" value="#{donorsRegistration.donors_name}" requiredMessage="İsim alanının doldurulması zorunludur." required="true" maxlength="15">
+                        <p:keyFilter regEx="/[a-z' ']/i"/>
+                    </p:inputText>                   
+                    <p:message for="name" />
+                    
+                    <p:outputLabel for="surname" value="SOYİSİM:"/>
+                    <p:inputText id="surname" value="#{donorsRegistration.donors_surname}" requiredMessage="Soyisim alanının doldurulması zorunludur." required="true" maxlength="15">
+                       <p:keyFilter regEx="/[a-z' ']/i"/>
+                    </p:inputText>
+                    <p:message for="surname" />
+                    
+                     <p:outputLabel for="bloodgroup" value="KAN GRUBU:" />
+                     <p:selectOneMenu id="bloodgroup" value="#{donorsRegistration.donors_bloodGroup}" requiredMessage="Kan grubu alanının doldurulması zorunludur." required="true"  style="width:200px">
+                        <f:selectItem itemLabel="seçiniz..." itemValue="" />
+                        <f:selectItems value="#{donorsRegistration.bloodGroupSelectItem}" />
+                    </p:selectOneMenu>
+                    <p:message for="bloodgroup"/>
+                    
+                    <p:outputLabel for="city" value="ŞEHİR:" />
+                     <p:selectOneMenu id="city" value="#{donorsRegistration.donors_city}" requiredMessage="Şehir alanının doldurulması zorunludur." required="true" style="width:200px">
+                        <f:selectItem itemLabel="seçiniz..." itemValue="" />
+                        <f:selectItems value="#{donorsRegistration.citiesSelectItem}" />
+                    </p:selectOneMenu>
+                    <p:message for="city"/>
+                     
+                     <p:outputLabel for="phone" value="TELEFON:"/>
+                    <p:inputMask id="phone" value="#{donorsRegistration.donors_phone}" mask="(999) 999-9999" requiredMessage="Telefon alanının doldurulması zorunludur." required="true"/>
+                    <p:message for="phone"/>
+                    
+                    <p:outputLabel for="mail" value="MAİL:"/>
+                    <p:inputText id="mail" value="#{donorsRegistration.donors_mail}" requiredMessage="Mail doldurulması zorunludur." required="true" validatorMessage="Lütfen geçerli bir eposta giriniz.">
+                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                    </p:inputText>
+                     <p:message for="mail"/>
+                    
+                    <p:outputLabel for="password" value="ŞİFRE"/>
+                     <p:password id="password" value="#{donorsRegistration.pass}" feedback="true" requiredMessage="Bu alanın doldurulması zorunludur." required="true"
+                    promptLabel="Lütfen şifre giriniz" weakLabel="Zayıf"
+                    goodLabel="Orta seviye" strongLabel="Güçlü" />
+                     <p:message for="password"/>
+                     
+                     <p:inputText id="lng" value="#{donorsRegistration.donors_lat}" disabled="true"/>
+                     <p:inputText id="lat" value="#{donorsRegistration.donors_lng}" disabled="true"/>
+                     <h:outputText value=" "/>
+                     
+                     <p:commandButton actionListener="#{donorsRegistration.DAO}" value="HESABI OLUŞTUR" update="growl"/>
+                     <p:commandButton onclick="PF('patientRegistrationForm').show();" value="ŞİFREMİ UNUTTUM" update="growl"/>
+                     <h:outputText value=" "/>
+                         
+                     <f:facet name="footer">
+                         <p:outputLabel value="!! İhtiyacı olan insanlara daha hızlı ulaşabilmek için harita üzerinden konumunuzu işaretlemelisiniz."/>
+                     </f:facet>
+                    </p:panelGrid>
+                </h:form>
+             </div>             
+               <!--Bağışçı için kayıt formu-->
+               <!-- Şifre Sıfırlama -->
+               <p:dialog showEffect="true" hideEffect="fade" modal="true" closeOnEscape="true" resizable="false" widgetVar="patientRegistrationForm" header="Kan İhtiyacı Formu">
+                   
+               </p:dialog>
+               <!-- Şifre Sıfırlama -->
+              <h:outputScript library="scripts" name="gmap.js"/>
+            </ui:define>
+        </ui:composition>       
+    </h:body>
+</html>
+

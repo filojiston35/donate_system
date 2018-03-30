@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="donorsJPA" transaction-type="RESOURCE_LOCAL">
+      <class>com.mycompany.model.mavenproject5.BloodDonors</class>
+      <class>com.mycompany.model.mavenproject5.Cities</class>
+      <class>com.mycompany.model.mavenproject5.BloodGroup</class>
+      <class>com.mycompany.model.mavenproject5.Patient</class>
+      <!--LOCAL 
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/donate_system?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="01233210"/>
+    </properties> 
+    -->
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://eu-cdbr-west-02.cleardb.net:3306/heroku_d19d02ba4faa574?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="bfc86f59a528e9"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="6f32748d"/>
+    </properties> 
+    
+      
+    
+  </persistence-unit>
+</persistence>

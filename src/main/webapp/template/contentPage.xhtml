@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body >   
+     <ui:composition>
+         <p:dialog showEffect="true" hideEffect="fade" modal="true" closeOnEscape="true" resizable="false" widgetVar="donorDetailForm" header="Detaylı Bağışcı Bİlgileri">
+                               <table>
+                                   <tr>
+                                       <td>İsim ve Soyisim:</td>
+                                       <td id="donorNameSurnameId"></td>
+                                   </tr>
+                                   <tr>
+                                       <td colspan="2"><p:separator/></td>
+                                   </tr>
+                                    <tr>
+                                       <td>Kan Grubu:</td>
+                                       <td id="donorBloodGroupId"></td>
+                                   </tr>
+                                     <tr>
+                                       <td colspan="2"><p:separator/></td>
+                                   </tr>
+                                   <tr>
+                                       <td>Şehir:</td>
+                                       <td id="donorCityId"></td>
+                                   </tr>
+                                     <tr>
+                                       <td colspan="2"><p:separator/></td>
+                                   </tr>
+                                   <tr>
+                                       <td>Mail Adresi:</td>
+                                       <td id="donorMailId"></td>
+                                   </tr>
+                                     <tr>
+                                       <td colspan="2"><p:separator/></td>
+                                   </tr>
+                                   <tr>
+                                       <td>Telefon Numarası:</td>
+                                       <td id="donorPhoneId"></td>
+                                   </tr>
+                                     <tr>
+                                       <td colspan="2"><p:separator/></td>
+                                   </tr>
+                               </table>
+                           </p:dialog>
+         <table style="width: 100%;">
+             <tr>
+                 <td valign="top" width="60%">
+                     <p:dataList rendered="#{contentPage.lessThan24==true}" value="#{contentPage.degreeOfUrgency1}" var="patient" type="unordered" itemType="none" paginator="true" rows="4" style="margin-bottom:10px;">
+                        <f:facet name="header">
+                           -24 SAATTEN AZ ZAMANI KALAN HASTALAR-
+                        </f:facet>
+                       <h:form>  
+                         <div class="degreeOfUrgency1">
+                             <table>
+                                <tr>
+                                   <td width="100px">#{patient.patientName}</td>
+                                    <td width="100px">#{patient.patientSurname}</td>
+                                    <td width="40px">#{patient.bloodGroupid.bloodGroupName}</td>
+                                    <td width="100px">#{patient.cityId.cityName}</td>                 
+                                    <td width="150px"> <p:outputLabel value ="#{patient.patientDeadline}" >
+                                            <f:convertDateTime pattern = "dd-MM-yyyy HH:mm:ss"  />
+                                         </p:outputLabel>
+                                    </td>
+                                    <td id="#{patient.patientId}contact"><p:commandLink rendered="#{SignIn.loggedIn==true}"  value="İletişim için tıklayınız." actionListener="#{contentPage.patientDetail(patient.patientId)}" oncomplete="handlePatientDetailRequest(xhr, status, args)"/></td>
+                                    <td width="100px" id="#{patient.patientId}mail"></td>
+                                    <td width="150px" id="#{patient.patientId}phone"></td>
+                                </tr>
+                                 <tr>
+                                     <td colspan="8" id="#{patient.patientId}info"></td>
+                                 </tr>
+                            </table>
+                        </div>
+                       </h:form>
+                    </p:dataList>
+                 </td>
+                 <td valign="top" width="40%" rowspan="3">
+                     <h:form rendered="#{patientSignIn.isLogged==true}">
+                         <p:panelGrid class="filterPanelGrid" columns="2">
+                        <f:facet name="header"><h3>BAĞIŞÇI LİSTELESİNİ FİLTRELE</h3></f:facet>
+                            
+                             <p:outputLabel value="KAN GRUBU"/>
+                              <p:outputLabel value="ŞEHİR"/>
+                            <p:selectOneMenu id="bloodgroup" value="#{contentPage.filterBloodGroup}"  style="width:200px">
+                                <p:ajax listener="#{contentPage.filterDonorList()}" update="donorList" />
+                                    <f:selectItem itemLabel="seçiniz..." itemValue="" />                                                
+                                    <f:selectItems value="#{contentPage.bloodGroupSelectItem}" />                                       
+                            </p:selectOneMenu>
+                              <p:selectOneMenu id="city" value="#{contentPage.filterCity}"  style="width:200px">
+                                  <p:ajax listener="#{contentPage.filterDonorList()}" update="donorList" />
+                                    <f:selectItem itemLabel="seçiniz..." itemValue="" />                                                
+                                    <f:selectItems value="#{contentPage.citiesSelectItem}" />                                       
+                            </p:selectOneMenu>
+                              
+                              <p:outputLabel value=" "/>
+                              <p:outputLabel value=" "/>
+                         </p:panelGrid>     
+                     <p:dataList id="donorList" rendered="#{patientSignIn.isLogged==true}" value="#{contentPage.bloodDonorFilterList}" var="donor" type="unordered" itemType="none" paginator="true" rows="10">
+                        <f:facet name="header">
+                           BAĞIŞÇI LİSTESİ
+                        </f:facet>
+                         <div class="donorList">
+                             <table>
+                                <tr>
+                                    <td width="60px">#{donor.donorsName.toUpperCase()}</td>
+                                    <td width="60px">#{donor.donorsSurname.toUpperCase()}</td>
+                                    <td width="40px">#{donor.cityId.cityName}</td>                
+                                    <td id="#{donor.donorsId}donorContact" width="200px"><p:commandLink oncomplete="handleDonorDetailRequest(xhr, status, args)" actionListener="#{contentPage.donorDetail(donor.donorsId)}"  value="İletişim için tıklayınız."/></td>
+                                    <td id="#{donor.donorsId}donorMail" width="100px"></td>
+                                    <td id="#{donor.donorsId}donorPhone" width="150px"></td>
+                                </tr>
+                                 <tr>
+                                     <td colspan="8" id="#{patient.patientId}info"></td>
+                                 </tr>
+                            </table>
+                        </div>
+                         </p:dataList>
+                       </h:form>
+                    
+                 </td>
+             </tr>
+             <tr>
+                 <td valign="top">
+                     <p:dataList rendered="#{contentPage.hours24==true}" style="margin-bottom:10px;" value="#{contentPage.degreeOfUrgency2}" var="patient" type="unordered" itemType="none" paginator="true" rows="4" styleClass="paginated">
+                        <f:facet name="header">
+                           -24 SAAT İÇİNDE YARDIMA İHTİYACI OLAN HASTALAR-
+                        </f:facet>
+                         <h:form> 
+                        <div class="degreeOfUrgency2" >
+                            <table>
+                                <tr>
+                                  <td width="100px">#{patient.patientName}</td>
+                                    <td width="100px">#{patient.patientSurname}</td>
+                                    <td width="40px">#{patient.bloodGroupid.bloodGroupName}</td>
+                                    <td width="100px">#{patient.cityId.cityName}</td>                 
+                                    <td width="150px"> <h:outputText value ="#{patient.patientDeadline}" >
+                                            <f:convertDateTime pattern = "dd-MM-yyyy HH:mm:ss" />
+                                         </h:outputText>
+                                    </td>
+                                    <td id="#{patient.patientId}contact"><p:commandLink rendered="#{SignIn.loggedIn==true}" value="İletişim için tıklayınız." actionListener="#{contentPage.patientDetail(patient.patientId)}" oncomplete="handlePatientDetailRequest(xhr, status, args)"/></td>
+                                    <td width="100px" id="#{patient.patientId}mail"></td>
+                                    <td width="150px" id="#{patient.patientId}phone"></td>
+
+                                </tr>
+                                 <tr>
+                                     <td colspan="8" id="#{patient.patientId}info"></td>
+                                 </tr>
+                            </table>
+                        </div>
+                         </h:form>
+                    </p:dataList>
+                 </td>
+             </tr>
+             <tr>
+                 <td valign="top">
+                     <p:dataList rendered="#{contentPage.moreThan24==true}" value="#{contentPage.degreeOfUrgency3}" var="patient" type="unordered" itemType="none" paginator="true" rows="4" styleClass="paginated">
+                        <f:facet name="header">
+                           -24 SAATTEN FAZLA SÜREDE YARDIMA İHTİYACI OLAN HASTALAR-
+                        </f:facet>
+                         <h:form> 
+                        <div class="degreeOfUrgency3" >
+                            <table>
+                                <tr>
+                                  <td width="100px">#{patient.patientName}</td>
+                                    <td width="100px">#{patient.patientSurname}</td>
+                                    <td width="40px">#{patient.bloodGroupid.bloodGroupName}</td>
+                                    <td width="100px">#{patient.cityId.cityName}</td>                 
+                                    <td width="150px"> <h:outputText value ="#{patient.patientDeadline}" >
+                                            <f:convertDateTime pattern = "dd-MM-yyyy HH:mm:ss" />
+                                         </h:outputText>
+                                    </td>
+                                    <td id="#{patient.patientId}contact"><p:commandLink rendered="#{SignIn.loggedIn==true}"  value="İletişim için tıklayınız." actionListener="#{contentPage.patientDetail(patient.patientId)}" oncomplete="handlePatientDetailRequest(xhr, status, args)"/></td>
+                                    <td width="100px" id="#{patient.patientId}mail"></td>
+                                    <td width="150px" id="#{patient.patientId}phone"></td>
+
+                                </tr>
+                                 <tr>
+                                     <td colspan="8" id="#{patient.patientId}info"></td>
+                                 </tr>
+                            </table>
+                        </div>
+                         </h:form>
+                    </p:dataList>
+                 </td>
+             </tr>
+          </table> 
+      
+          <script type="text/javascript">
+            function handlePatientDetailRequest(xhr, status, args) {
+               
+                var patientmailId=args.patientId+'mail';
+                var patientphoneId=args.patientId+'phone';
+                var patientcontactId=args.patientId+'contact';
+                var patientinfo=args.patientId+'info';
+                document.getElementById(patientphoneId).innerHTML=args.patientphone;
+                document.getElementById(patientmailId).innerHTML=args.patientmail;
+                document.getElementById(patientcontactId).innerHTML="";
+                if(args.patientinfo!="")
+                    document.getElementById(patientinfo).innerHTML='------------------------------------------------<br/>'+args.patientinfo;            
+         }
+         function handleDonorDetailRequest(xhr, status, args) {
+                     
+             document.getElementById("donorMailId").innerHTML=args.donorMail;
+             document.getElementById("donorPhoneId").innerHTML=args.donorPhone;
+             document.getElementById("donorCityId").innerHTML=args.donorCity;
+             document.getElementById("donorBloodGroupId").innerHTML=args.donorBloodGroup;
+             document.getElementById("donorNameSurnameId").innerHTML=args.donorNameSurname;
+             PF('donorDetailForm').show();
+         }
+        </script>
+        </ui:composition>       
+    </h:body>
+</html>
+
+
+

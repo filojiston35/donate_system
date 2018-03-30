@@ -1,0 +1,10 @@
+.PanelGrid  
+{
+ text-align: center;
+}
+.PanelGrid tr td
+{
+   padding-bottom: 10px! important;
+   padding-top: 10px! important;
+   border: none! important;
+}
