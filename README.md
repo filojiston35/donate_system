@@ -62,7 +62,7 @@ mySQL database kullanılmıştır.
     
  ## Kurulum
  
- Gerekli dosyaları indirip netbeans IDE ortamında açmanız yeterlidir.
+ Gerekli dosyaları indirip netbeans IDE ortamında açmanız ve bağımlılıkların yüklenmesi için projeyi build etmeniz yeterlidir.
  
  Application server olarak wildfly 10.0.0 ve ya glassfish 4.1.1 kullanılabilir.
  
@@ -81,3 +81,7 @@ mySQL database kullanılmıştır.
     
  persistence.xml dosyasında veritabanı ayarlamaları yapılmalıdır.SQL file dosyaları proje içerisine eklenmiştir.Bu şekilde 2. yöntem olarak çalıştırılabilir.
  
+ ## Test
+ 
+ Test işlemleri jUnit ve Selenium ile yapılmıştır.
+ Projenin açılışında çalışmaması için yorum satırı haline getirilmiştir.
